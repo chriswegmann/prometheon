@@ -56,12 +56,21 @@ def datetime_cast(dt):
         return dt.to_pydatetime()
     else:
         return dt
-
-# Read Excel file with pandas, sheet by sheet
-
+# Following code requires the presence of an .sqlite db at location
+# db_path, with tables corresponding to the Excel sheet names, and
+# column names corresponding to the (first part) of the Excel column headers
+        
+    
+# Read Excel file with pandas, sheet by sheet      
 for sheet_name in table_name_list:
+    
+    # Open the sqlite connection
     db_connection = sqlite3.connect(db_path) 
+    
+    # Read the excel files with pandas
     df_tmp = pd.read_excel(excel_path, sheet_name=sheet_name)
+    
+    # List that will consist of dicts, one dict per row
     table_values_list =[]
     
     # Make for each row a dictionary with column name : value
@@ -74,11 +83,13 @@ for sheet_name in table_name_list:
         col_values = {key.split(' ')[0]:datetime_cast(value) for 
                       key,value in row[1].iteritems()}
         
-        # ugly hack to cast from Timedate (pandas format) to timedate.timedate
-        # col_values['VALID_FROM'] = col_values['VALID_FROM'].to_pydatetime()
         table_values_list.append(col_values)
         # NB: col_values is a dictionary with column_name: value
-    add_data_to_sql(db_connection, sheet_name, table_values_list)
+        
+    # Add all rows to the table with sheet_name
+    add_data_to_sql(db_connection, table_name=sheet_name, 
+                    data=table_values_list,
+                    update=False)
 
                 
             
