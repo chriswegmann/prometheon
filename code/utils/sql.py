@@ -254,63 +254,6 @@ def add_data_to_sql(connection, table_name, data, update=False, verbose=0):
         connection.close()
 
 
-def add_data_to_sqlite(database_path, table_name, data, flatten_dict=False):
-    '''
-    Creates a connection to a sqlite database, and writes values into 
-    a specified table
-    
-    database_path: path of sqlite database (string)
-    table_name: name of table the data will be written into (string)
-    data: a list of dicts (list). Each dict represents a row, with 
-          {columname1:value1, columname2:value2, ... }
-    TODO's:
-    + (done): option to deal with missing keys in data
-      So: make query each time with the keys of data[i]
-    - check cursor closing's: necessary?
-    '''
-    # use " with .. as" statement to guarantee closure of connection    
-    with sqlite3.connect(database_path) as conn:
-        c= conn.cursor()
-        
-        # get the 
-        size_before_operation=size_sqlite_table(c,table_name)
-        query_template = "INSERT OR IGNORE INTO {0} ({1}) VALUES ({2})"
-    
-        #print(query)
-        
-        for record in data:
-            if flatten_dict:
-                try:
-                    record = flatten(record)
-                except:
-                    continue
-
-            # Convert things that are not string to string, or remove
-            #pdb.set_trace()
-            #record = convert_values_to_strings(record)
-    
-            # Put keys within parentheses to deal with special chars like <:>
-            encapsulated_keys = ["'" + key + "' " for key in record.keys()]
-            query = query_template.format(table_name, ",".join(encapsulated_keys),
-                                 ",".join("?" * len(encapsulated_keys)))
-            values = list(record.values())
-            print('###############')
-            print(query)
-            print(values)
-            print('###############')
-            c.execute(query, values)
-        size_after_operation = size_sqlite_table(c, table_name)
-        added_rows = size_after_operation['nrow'] - size_before_operation['nrow']
-        print("Added {0} rows (of {1} suggestions) to table {2}".format(
-                added_rows, len(data), table_name))
-
-        conn.commit()
-        try:
-            conn.close()
-        except:
-            print('could not close database connection')
-
-
 def size_sqlite_table(cursor, table_name):
     """ 
     Returns a dict with keys "nrow" and "ncol"
