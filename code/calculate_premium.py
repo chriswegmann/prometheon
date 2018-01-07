@@ -46,9 +46,8 @@ excel_path = os.path.join(DATA_PATH, "pricing_data.xlsx")
 table_name_list = ['MAPPING_PAR_REF_AIRPORT', 'MAPPING_PAR_REF_GROUND_HANDLER',
                    'PAR_AIRPORT', 'PAR_GROUND_HANDLER']
 
-
 ######################################################
-### Main Code       ##################################
+### Input           ##################################
 ######################################################
 # During development, give a dict here. In production, this will 
 # go through sys.args
@@ -60,37 +59,18 @@ quote_request = {
 'ground_handlers' : [1,5, 10],
 'airports' : [650, 655,660],
 'timestamp' : datetime.now()       }
-          
-# Read Excel file with pandas, sheet by sheet      
-for sheet_name in table_name_list:
-    
-    # Open the sqlite connection
-    db_connection = sqlite3.connect(db_path) 
-    
-    # Read the excel files with pandas
-    df_tmp = pd.read_excel(excel_path, sheet_name=sheet_name)
-    
-    # List that will consist of dicts, one dict per row
-    table_values_list =[]
-    
-    # Make for each row a dictionary with column name : value
-    for row in df_tmp.iterrows():
-        # row[0] contains the index
-        # row[1] is a Pandas Series
-        # Because the column names are formatted: "COLUMN_NAME<whitespace>TYPE",
-        # split on whitespace and get the first entry only 
-        
-        col_values = {key.split(' ')[0]:datetime_cast(value) for 
-                      key,value in row[1].iteritems()}
-        
-        table_values_list.append(col_values)
-        # NB: col_values is a dictionary with column_name: value
-        
-    # Add all rows to the table with sheet_name
-    add_data_to_sql(db_connection, table_name=sheet_name, 
-                    data=table_values_list,
-                    update=False)
 
+######################################################
+### Main Code       ##################################
+######################################################
+
+
+sql = """SELECT B.PARAMETER_VALUE FROM {table_a} AS A 
+JOIN {table_b} AS B ON A.PARAMETER_ID = B.PARAMETER_ID WHERE A.{column_id} = ? AND 
+B.VALID_FROM <= ? AND B.VALID_TO > ? """.format(table_a='MAPPING_PAR_REF_AIRPORT',
+                table_b='PAR_AIRPORT', column_id='AIRPORT_ID')
+
+   
                 
             
             
@@ -98,6 +78,12 @@ for sheet_name in table_name_list:
     
 
 ############## SANDBOX ################
-            
-
+       
+# Read Excel file with pandas, sheet by sheet      
+    
+    # Open the sqlite connection
+db_connection = sqlite3.connect(db_path) 
+cursor = db_connection.cursor()
+cursor.execute(sql, (600, datetime.now(), datetime.now() ))          
+cursor.fetchall()
 
