@@ -2,8 +2,12 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sat Jan  6 17:26:23 2018
-
 @author: ernstoldenhof
+
+Populate an empty sql database, initialized with tables and column names, 
+from an Excel file that has sheet names corresponding to table names and
+column headers corresponding to the columns in the database. 
+
 
 RAN SUCCESSFULLY Jan 7th, 13:50. 
 - Checked: all tables are populated
@@ -23,8 +27,10 @@ import os.path
 import pandas as pd
 import sys
 
-cwd = os.getcwd()
-sys.path.append(cwd)
+#cwd = os.getcwd()
+#if not cwd in sys.path:
+#    pass
+#    sys.path.append(cwd)
 
 ## Project imports:
 # Import sql helpers from utils/
@@ -56,11 +62,12 @@ def datetime_cast(dt):
         return dt.to_pydatetime()
     else:
         return dt
+    
+    
 # Following code requires the presence of an .sqlite db at location
 # db_path, with tables corresponding to the Excel sheet names, and
 # column names corresponding to the (first part) of the Excel column headers
-        
-    
+          
 # Read Excel file with pandas, sheet by sheet      
 for sheet_name in table_name_list:
     
