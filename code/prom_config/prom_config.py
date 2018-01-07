@@ -1,9 +1,11 @@
 import os
 import projectdata
-DATA_PATH = os.path.dirname(projectdata.__file__)
+
 # ################################################################################
 # THIS FILE CONTAINS ALL GENERAL PROJECT CONFIGURATIONS AS CONSTANTS
 # ################################################################################
+
+DATA_PATH = os.path.dirname(projectdata.__file__)
 
 
 ## Postgres configuration

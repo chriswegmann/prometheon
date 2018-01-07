@@ -1,24 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sat Jan  6 17:26:23 2018
+Created on Sun Jan  7 14:15 2018
 @author: ernstoldenhof
 
-Populate an empty sql database, initialized with tables and column names, 
-from an Excel file that has sheet names corresponding to table names and
-column headers corresponding to the columns in the database. 
+Calculate the pricing based on factors stored in sql database. 
+Input is a dictionary giving the details on the contract
+
+{
+'amount' : amount to be insured,
+'ground_handlers' : list of ground handlers,
+'airports' : list of airports,
+'timestamp' : the date and time of the contractual agreement
+}
 
 
-RAN SUCCESSFULLY Jan 7th, 13:50. 
-- Checked: all tables are populated
-- In pricing_data_model.sql: added primary keys and foreign keys to guarantee 
-  integrity and avoid duplicates
-- NB: simultaneous having the DBVisualizer connection leads to errors with 
-  "OperationalError: database is locked". Disconnect in DBVisualizer before running this
-
-TODO
-- get connection from sql module instead of here
-- 
+RAN ....
+  
 """
 ######################################################
 ### Imports         ##################################
@@ -28,12 +26,7 @@ TODO
 import sqlite3
 import os.path
 import pandas as pd
-import sys
-
-#cwd = os.getcwd()
-#if not cwd in sys.path:
-#    pass
-#    sys.path.append(cwd)
+from datetime import datetime
 
 ## Project imports:
 # Import sql helpers from utils/
@@ -57,19 +50,16 @@ table_name_list = ['MAPPING_PAR_REF_AIRPORT', 'MAPPING_PAR_REF_GROUND_HANDLER',
 ######################################################
 ### Main Code       ##################################
 ######################################################
-#describe_db(db_path)
+# During development, give a dict here. In production, this will 
+# go through sys.args
 
-# lambda function for type casting to datetime
-def datetime_cast(dt):
-    if type(dt) == pd._libs.tslib.Timestamp:
-        return dt.to_pydatetime()
-    else:
-        return dt
-    
-    
-# Following code requires the presence of an .sqlite db at location
-# db_path, with tables corresponding to the Excel sheet names, and
-# column names corresponding to the (first part) of the Excel column headers
+# NB: airports/handlers are identified by their parameter_id (parameter). 
+ 
+quote_request = {
+'amount' : 360E3,
+'ground_handlers' : [1,5, 10],
+'airports' : [650, 655,660],
+'timestamp' : datetime.now()       }
           
 # Read Excel file with pandas, sheet by sheet      
 for sheet_name in table_name_list:
