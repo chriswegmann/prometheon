@@ -47,19 +47,44 @@ table_name_list = ['MAPPING_PAR_REF_AIRPORT', 'MAPPING_PAR_REF_GROUND_HANDLER',
                    'PAR_AIRPORT', 'PAR_GROUND_HANDLER']
 
 
-######################################################
-### Main Code       ##################################
-######################################################
-# During development, give a dict here. In production, this will 
-# go through sys.args
 
-# NB: airports/handlers are identified by their parameter_id (parameter). 
- 
+required_keys = ['amount', 'ground_handlers', 
+                 'airports', 'timestamp']
+######################################################
+### Input           ##################################
+######################################################
+
+# quote_request : input to the code
+# During development, give a dict here. In production, this will 
+# go through sys.args and in arguments in linux
+
 quote_request = {
 'amount' : 360E3,
 'ground_handlers' : [1,5, 10],
 'airports' : [650, 655,660],
 'timestamp' : datetime.now()       }
+
+
+######################################################
+### Main Code       ##################################
+######################################################
+
+# Needed functionality:
+# - Check that all necessary keys are given (locally)
+# - Check that 
+
+
+# NB: airports/handlers are identified by their parameter_id (parameter). 
+# 1. Check that all required keys are provided
+
+for key in required_keys:
+    assert key in quote_request.keys(), 'Aborting: key "{}" missing in request'.format(key)
+    
+
+for key, value in quote_request.items():
+    print(key)
+    
+
           
 # Read Excel file with pandas, sheet by sheet      
 for sheet_name in table_name_list:
