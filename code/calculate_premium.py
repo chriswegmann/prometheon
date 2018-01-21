@@ -18,8 +18,6 @@ Input is a dictionary giving the details on the contract
 RAN SUCCESSFULLY (on Linux) 20:00, 07 Jan 2018
 
 TODO's
-- For API purpose, this script needs to be called with arguments. sys.arg needs
-  to be implemented
 - Some tests need to be defined
 - Move construction of dicts etc to config.py
 """
