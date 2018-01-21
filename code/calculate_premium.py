@@ -59,7 +59,7 @@ required_keys = ['amount', 'ground_handlers',
 # The tables and name of the column for the query corresponding to a key in the input
 # The collection of names is a namedtuple, goes into a dict
 
-# Define namedtuple
+# Define namedtuple to consistently store the sql names for the parameters
 TableNames = namedtuple('TableNames','table_a table_b column_name')
 
 # Define the dict with the namedtuple TableNames as value
@@ -170,7 +170,7 @@ def create_quote(quote_request):
                 
         
 premium, quote_reply = create_quote(quote_request)
-print(premium)
+print('premium calculated: {}'.format(premium))
 print(quote_reply)     
 
  
