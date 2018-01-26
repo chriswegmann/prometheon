@@ -1,43 +1,27 @@
 import os
-import projectdata
+import data
 from collections import namedtuple
-# ################################################################################
-# THIS FILE CONTAINS ALL GENERAL PROJECT CONFIGURATIONS AS CONSTANTS
-# ################################################################################
 
-DATA_PATH = projectdata.__path__[0]
+## PATHS
 
-
-## Postgres configuration
-#POSTGRES_HOST = os.environ['POSTGRES_HOST']
-#POSTGRES_PORT = os.environ['POSTGRES_PORT']
-#POSTGRES_USER = os.environ['POSTGRES_USER']
-#POSTGRES_PASSWORD = os.environ['POSTGRES_PASSWORD']
-#POSTGRES_DATABASE = os.environ['POSTGRES_DATABASE']
-#
-
-
-######################################################
-### Set parameters  ##################################
-######################################################
+DATA_PATH = data.__path__[0]
 db_path = os.path.join(DATA_PATH, "pricing.db")
 excel_path = os.path.join(DATA_PATH, "pricing_data.xlsx")
-print(db_path)
 
-## Set other parameters
+## SQL PARAMS
 table_name_list = ['MAPPING_PAR_REF_AIRPORT', 'MAPPING_PAR_REF_GROUND_HANDLER',
                    'PAR_AIRPORT', 'PAR_GROUND_HANDLER']
 
 required_keys = ['amount', 'ground_handlers',
                  'airports', 'timestamp']
 
-# The tables and name of the column for the query corresponding to a key in the input
-# The collection of names is a namedtuple, goes into a dict
-
-# Define namedtuple
+# Define namedtuple that links the table that contains the ID's and
+# the parameter (multiplier) ID's with that that contains the parameters
+# (multipliers)
 TableNames = namedtuple('TableNames', 'table_a table_b column_name')
 
-# Define the dict with the namedtuple TableNames as value
+# Define the dict with the namedtuple TableNames as value, keys are those that
+# should be present in the request
 sql_parameter_tablename_dict = {}
 sql_parameter_tablename_dict['airports'] = TableNames('MAPPING_PAR_REF_AIRPORT',
                             'PAR_AIRPORT',
@@ -47,6 +31,5 @@ sql_parameter_tablename_dict['ground_handlers'] = TableNames('MAPPING_PAR_REF_GR
                             'PAR_GROUND_HANDLER',
                             'GROUND_HANDLER_ID')
 
-# Return a pandas DataFrame as overview (perhaps, other data structure is more suited?)
-
-base_rate = 1.E-3 # This probably should be in the database in its own table, with FROM, TO
+## MISCELLANEOUS
+base_rate = 1.E-3 # This should be in the database in its own table, with FROM, TO
