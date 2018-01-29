@@ -26,15 +26,26 @@ class Quote(Resource):
                         help="'Timestamp' cannot be left blank")
 
     @classmethod
-    #@jwt_required() # NB: start without authentification
+    @jwt_required() # NB: start without authentification
     def post(cls):
         # First check if this is a valid post ("Error-first approach")
         # NB: next takes the first element from the generator
 
         premium_request = cls.parser.parse_args() #premium_request is a dict
-        premium, quote_reply = calculate_premium(premium_request)
-        return {"premium": premium,
-                "details": quote_reply}, 200
+        quote_reply = None
+        try:
+            premium, quote_reply = calculate_premium(premium_request)
+        except:
+            # If quote_reply is missing, this means some error occurred
+            # This is communicated by a message
+            message = calculate_premium(premium_request)
+
+        if not quote_reply is None:
+            return {"premium": premium,
+                    "details": quote_reply}, 200
+        else:
+            return message, 400
+
 
 
 if __name__ == '__main__':

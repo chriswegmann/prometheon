@@ -6,16 +6,19 @@ import sqlite3
 # A model is an internal representation of an object
 # A resource is what the API interacts with
 
-class UserModel:
-    def __init__(self, _id, username, password):
-        self.id = _id
+
+class UserModel(object):
+    def __init__(self, id, username, password):
+        self.id = id
         self.username = username
         self.password = password
 
-    @classmethod
-    def find_by_username(cls, username):
-        pass
+    def __str__(self):
+        return "User(id='%s')" % self.id
 
-    @classmethod
-    def find_by_id(cls, _id):
-        pass
+users = [
+    UserModel(1, '832l7xjj', 'dlTks7lK'),
+]
+
+username_table = {u.username: u for u in users}
+userid_table = {u.id: u for u in users}

@@ -96,8 +96,10 @@ def calculate_premium(premium_request):
                                         'type':key,
                                         'parameter_id':parameter_id,
                                         'factor':factor })
-            except Exception as e:
-                raise e
+            except TypeError:
+                return {'message': ('parameter_id {} for key {} for date'
+                                '{} not found').format(
+                                    parameter_id, key, timestamp_str)}
             finally:
                 db_connection.close()
 
@@ -105,7 +107,7 @@ def calculate_premium(premium_request):
     parameters = nparray([item['factor'] for item in quote_reply])
     parameters_product = npproduct(parameters)
     premium = (premium_request['amount'] * base_rate * parameters_product)
-    return(premium, quote_reply)
+    return (premium, quote_reply)
 
 
 
