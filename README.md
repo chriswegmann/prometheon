@@ -1,5 +1,2 @@
 # prometheon
-Sandbox for developments related to Prometheon
-
-- code
-Contains the code for REST API. 
+Code for initial analysis of container data
