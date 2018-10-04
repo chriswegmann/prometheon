@@ -1,2 +1,2 @@
-# prometheon
-Code for initial analysis of container data
+## Prometheon
+Code for initial analysis and cleaning of container data received from SkyCell.
